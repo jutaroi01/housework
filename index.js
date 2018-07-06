@@ -74,7 +74,8 @@ function shoppingMainTask(text) {
             }else if(reqLine[0] == '買った'){
                 var deleteTarget = fetchResults.find(result => result['item'] == reqLine[1]);
                 if(deleteTarget){
-                    new Shopping().set('objectId', deleteTarget['objectId'])
+                    var shopping = new Shopping();
+                    shopping.set('objectId', deleteTarget['objectId'])
                         .delete()
                         .then(function(data){
                             console.log('delete success');
