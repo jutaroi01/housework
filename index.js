@@ -33,9 +33,11 @@ function getTmpDataTask(className) {
         var MyClass = myNCMB.DataStore(className);
         MyClass.fetchAll()
             .then(function(results){
+                console.log('fetchAll success');
                 next(null, results);
             })
             .catch(function(err){
+                console.log('fetchAll failed');
                 next('fetchAll failed:' + JSON.stringify(err));
             });
     }
