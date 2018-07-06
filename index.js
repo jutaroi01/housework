@@ -34,7 +34,7 @@ function getTmpDataTask(className) {
         MyClass.fetchAll()
             .then(function(results){
                 console.log('fetchAll success');
-                console.dir(results);
+                console.log(JSON.stringify(results));
                 next(null, results);
             })
             .catch(function(err){
