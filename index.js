@@ -33,12 +33,9 @@ function getTmpDataTask(className) {
         var MyClass = myNCMB.DataStore(className);
         MyClass.fetchAll()
             .then(function(results){
-                console.log('fetchAll success');
-                console.log(JSON.stringify(results));
                 next(null, results);
             })
             .catch(function(err){
-                console.log('fetchAll failed');
                 next('fetchAll failed:' + JSON.stringify(err));
             });
     }
@@ -47,7 +44,6 @@ function getTmpDataTask(className) {
 // メッセージに応じてメイン処理を実行
 function shoppingMainTask(text) {
     return function(fetchResults, next) {
-        console.log('shoppingMainTask start');
         if(text == '見せて'){
             var ret = [];
             if(fetchResults.length == 0){
@@ -60,16 +56,13 @@ function shoppingMainTask(text) {
         } else {
             var Shopping = myNCMB.DataStore('Shopping');
             var reqLine = text.split(/[\s]/, 2);
-            console.log(reqLine);
             if(reqLine[0] == '欲しい'){
                 new Shopping().set('item', reqLine[1])
                     .save()
                     .then(function(data){
-                        console.log('save success');
                         next(null, ['「' + reqLine[1] + '」を追加したよ']);
                     })
                     .catch(function(err){
-                        console.log('save failed');
                         next('save failed:' + JSON.stringify(err));
                     })
             }else if(reqLine[0] == '買った'){
@@ -79,19 +72,15 @@ function shoppingMainTask(text) {
                     shopping.set('objectId', deleteTarget['objectId'])
                         .delete()
                         .then(function(data){
-                            console.log('delete success');
                             next(null, ['「' + reqLine[1] + '」を削除したよ']);
                         })
                         .catch(function(err){
-                            console.log('delete failed');
                             next('delete failed:' + JSON.stringify(err));
                         })
                 }else{
-                    console.log('delete unhit');
                     next(null, ['「' + reqLine[1] + '」はリストにないよ']);
                 }
             }else{
-                console.log('unknown text');
                 next(null, ['ちょっとよくわからない']);
             }
         }
@@ -134,9 +123,6 @@ function checkTextMessageTask(request) {
 // 返信メッセージを作成、送信するコールバック
 function replyCallback(replyToken, accessToken) {
     return function(error, result) {
-        console.log('callback start');
-        console.log(error);
-        console.log(result);
         if(error){
             console.log(error);
             return;
@@ -151,8 +137,6 @@ function replyCallback(replyToken, accessToken) {
                 text: elem
             })
         });
-        console.log(replyToken);
-        console.log(message);
         client.replyMessage(replyToken, message)
             .then(() => {
                 // console.log('reply success: ' + JSON.stringify(message));
