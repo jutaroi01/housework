@@ -19,7 +19,7 @@ app.post('/shopping', function(req, res) {
     async.waterfall([
             validateSignatureTask(req, process.env.CHANNEL_SECRET),
             checkTextMessageTask(req),
-            getTmpDataTask('shopping'),
+            getTmpDataTask('Shopping'),
             shoppingMainTask(req.body['events'][0]['message']['text'])
         ],
         replyCallback(req.body['events'][0]['replyToken'], process.env.ACCESS_TOKEN)
@@ -113,7 +113,7 @@ app.listen(app.get ('port'), function() {
 function validateSignatureTask(request, secret) {
     return function(next) {
         if (!validateSignature(request, secret)) {
-            next('ERROR: request header check NG');
+            next('invalid signature');
         }else{
             next();
         }
@@ -131,7 +131,7 @@ function checkTextMessageTask(request) {
     return function(next) {
         if (request.body['events'][0]['type'] != 'message' ||
             request.body['events'][0]['message']['type'] != 'text') {
-            next('ERROR: request body check NG');
+            next('request is not text');
         } else {
             next();
         }
@@ -160,7 +160,7 @@ function replyCallback(replyToken, accessToken) {
                 // console.log('DEBUG: reply success: ' + JSON.stringify(message));
             })
             .catch((err) => {
-                console.log('ERROR: reply error: ' + err);
+                console.log('reply failed: ' + err);
             });
     }
 }
