@@ -69,7 +69,7 @@ function shoppingMainTask(text) {
                         next('save failed:' + JSON.stringify(err));
                     })
             }else if(reqLine[0] == '買った'){
-                var deleteTarget = fetchResults.find(result => result['ietm'] == reqLine[1]);
+                var deleteTarget = fetchResults.find(result => result['item'] == reqLine[1]);
                 if(deleteTarget){
                     new Shopping().set('objectId', deleteTarget['objectId'])
                         .delete()
