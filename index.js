@@ -6,7 +6,7 @@ var line = require('@line/bot-sdk');
 var NCMB = require("ncmb");
 // var request = require('request');
 
-var linebotsNCMB =
+var myNCMB =
     new NCMB(process.env.NCMB_APPKEY, process.env.NCMB_CLIKEY);
 
 var app = express();
@@ -30,7 +30,7 @@ app.post('/shopping', function(req, res) {
 // NCMB上のデータを取得する
 function getTmpDataTask(className) {
     return function(next) { // get tmpData
-        var MyClass = linebotsNCMB.DataStore(className);
+        var MyClass = myNCMB.DataStore(className);
         MyClass.fetchAll()
             .then(function(results){
                 next(null, results);
@@ -54,59 +54,35 @@ function shoppingMainTask(text) {
             }
             next(null, ret);
         } else {
-            var Shopping = linebotsNCMB.DataStore('Shopping');
-            var saveList = [];
-            var deleteList = [];
-            var invalidList = [];
-            // 改行を区切りとして配列化し、ついでに空要素を排除
-            var reqArray = text.split(/[\n]/).filter(elem => elem);
-            // 各行に対して、半角スペースを区切りとして1番目を命令、2番目を商品名として処理
-            reqArray.forEach(function(elem){
-                var reqLine = elem.split(/[\s]/, 2);
-                if(reqLine[0] == '欲しい'){
-                    new Shopping().set('item', reqLine[1])
-                        .save()
+            var Shopping = myNCMB.DataStore('Shopping');
+            var reqLine = text.split(/[\s]/, 2);
+            if(reqLine[0] == '欲しい'){
+                new Shopping().set('item', reqLine[1])
+                    .save()
+                    .then(function(data){
+                        next(null, '「' + reqLine[1] + '」を追加したよ');
+                    })
+                    .catch(function(err){
+                        next('save failed:' + JSON.stringify(err));
+                    })
+            }else if(reqLine[0] == '買った'){
+                var deleteTarget = fetchResults.find(result => result['ietm'] == reqLine[1]);
+                if(deleteTarget){
+                    new Shopping().set('objectId', deleteTarget['objectId'])
+                        .delete()
                         .then(function(data){
-                            saveList.push(reqLine[1]);
+                            next(null, '「' + reqLine[1] + '」を削除したよ');
                         })
                         .catch(function(err){
-                            next('save failed:' + JSON.stringify(err));
+                            next('delete failed:' + JSON.stringify(err));
                         })
-                }else if(reqLine[0] == '買った'){
-                    var deleteTarget = fetchResults.find(result => result['ietm'] == reqLine[1]);
-                    if(deleteTarget){
-                        new Shopping().set('objectId', deleteTarget['objectId'])
-                            .delete()
-                            .then(function(data){
-                                deleteList.push(reqLine[1]);
-                            })
-                            .catch(function(err){
-                                next('delete failed:' + JSON.stringify(err));
-                            })
-                    }else{
-                        invalidList.push(elem);
-                    }
                 }else{
-                    invalidList.push(elem);
+                    next(null, '「' + reqLine[1] + '」はリストにないよ');
                 }
-            });
-            console.log(saveList);
-            console.log(deleteList);
-            console.log(invalidList);
-            var ret = [];
-            if(saveList.length != 0){
-                ret.push('【追加したもの】\n' + saveList.join('\n'));
             }
-            if(deleteList.length != 0){
-                ret.push('【削除したもの】\n' + deleteList.join('\n'));
-            }
-            if(invalidList.length != 0){
-                ret.push('【処理できなかった命令】\n' + invalidList.join('\n'));
-            }
-            console.log(ret);
-            next(null, ret);
-        };
-    }
+        }
+        next(null, 'ちょっとよくわからない');
+    };
 }
 
 app.listen(app.get ('port'), function() {
