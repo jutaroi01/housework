@@ -73,22 +73,17 @@ function shoppingMainTask(text) {
                             next('save failed:' + JSON.stringify(err));
                         })
                 }else if(reqLine[0] == '買った'){
-                    var isDelete = false;
-                    fetchResults.forEach(function(elem){
-                        if(elem['ietm'] == reqLine[1]){
-                            new Shopping().set('objectId', elem['objectId'])
-                                .delete()
-                                .then(function(data){
-                                    deleteList.push(reqLine[1]);
-                                    isDelete = true;
-                                    break;
-                                })
-                                .catch(function(err){
-                                    next('delete failed:' + JSON.stringify(err));
-                                })
-                        }
-                    });
-                    if(!isDelete){
+                    var deleteTarget = fetchResults.find(result => result['ietm'] == reqLine[1]);
+                    if(deleteTarget){
+                        new Shopping().set('objectId', deleteTarget['objectId'])
+                            .delete()
+                            .then(function(data){
+                                deleteList.push(reqLine[1]);
+                            })
+                            .catch(function(err){
+                                next('delete failed:' + JSON.stringify(err));
+                            })
+                    }else{
                         invalidList.push(elem);
                     }
                 }else{
