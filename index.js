@@ -34,6 +34,7 @@ function getTmpDataTask(className) {
         MyClass.fetchAll()
             .then(function(results){
                 console.log('fetchAll success');
+                console.dir(results);
                 next(null, results);
             })
             .catch(function(err){
@@ -94,7 +95,7 @@ function shoppingMainTask(text) {
                 next(null, 'ちょっとよくわからない');
             }
         }
-    };
+    }
 }
 
 app.listen(app.get ('port'), function() {
