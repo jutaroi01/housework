@@ -155,9 +155,11 @@ function replyCallback(replyToken, accessToken) {
                 text: elem
             })
         });
+        console.log(replyToken);
+        console.log(message);
         client.replyMessage(replyToken, message)
             .then(() => {
-                // console.log('DEBUG: reply success: ' + JSON.stringify(message));
+                // console.log('reply success: ' + JSON.stringify(message));
             })
             .catch((err) => {
                 console.log('reply failed: ' + err);
