@@ -46,6 +46,7 @@ function getTmpDataTask(className) {
 // メッセージに応じてメイン処理を実行
 function shoppingMainTask(text) {
     return function(fetchResults, next) {
+        console.log('shoppingMainTask start');
         if(text == '見せて'){
             var ret = [];
             if(fetchResults.length == 0){
