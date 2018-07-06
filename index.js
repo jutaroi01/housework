@@ -131,6 +131,7 @@ function checkTextMessageTask(request) {
 // 返信メッセージを作成、送信するコールバック
 function replyCallback(replyToken, accessToken) {
     return function(error, result) {
+        console.log('callback start');
         if(error){
             console.log(error);
             return;
