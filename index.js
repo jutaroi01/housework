@@ -132,6 +132,8 @@ function checkTextMessageTask(request) {
 function replyCallback(replyToken, accessToken) {
     return function(error, result) {
         console.log('callback start');
+        console.log(error);
+        console.log(result);
         if(error){
             console.log(error);
             return;
