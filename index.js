@@ -79,9 +79,10 @@ function shoppingMainTask(text) {
                 }else{
                     next(null, '「' + reqLine[1] + '」はリストにないよ');
                 }
+            }else{
+                next(null, 'ちょっとよくわからない');
             }
         }
-        next(null, 'ちょっとよくわからない');
     };
 }
 
