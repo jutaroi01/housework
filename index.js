@@ -61,9 +61,11 @@ function shoppingMainTask(text) {
                 new Shopping().set('item', reqLine[1])
                     .save()
                     .then(function(data){
+                        console.log('save success');
                         next(null, '「' + reqLine[1] + '」を追加したよ');
                     })
                     .catch(function(err){
+                        console.log('save failed');
                         next('save failed:' + JSON.stringify(err));
                     })
             }else if(reqLine[0] == '買った'){
@@ -72,15 +74,19 @@ function shoppingMainTask(text) {
                     new Shopping().set('objectId', deleteTarget['objectId'])
                         .delete()
                         .then(function(data){
+                            console.log('delete success');
                             next(null, '「' + reqLine[1] + '」を削除したよ');
                         })
                         .catch(function(err){
+                            console.log('delete failed');
                             next('delete failed:' + JSON.stringify(err));
                         })
                 }else{
+                    console.log('delete unhit');
                     next(null, '「' + reqLine[1] + '」はリストにないよ');
                 }
             }else{
+                console.log('unknown text');
                 next(null, 'ちょっとよくわからない');
             }
         }
