@@ -56,6 +56,7 @@ function shoppingMainTask(text) {
         } else {
             var Shopping = myNCMB.DataStore('Shopping');
             var reqLine = text.split(/[\s]/, 2);
+            console.log(reqLine);
             if(reqLine[0] == '欲しい'){
                 new Shopping().set('item', reqLine[1])
                     .save()
