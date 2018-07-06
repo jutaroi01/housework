@@ -90,6 +90,9 @@ function shoppingMainTask(text) {
                     invalidList.push(elem);
                 }
             });
+            console.log(saveList);
+            console.log(deleteList);
+            console.log(invalidList);
             var ret = [];
             if(saveList.length != 0){
                 ret.push('【追加したもの】\n' + saveList.join('\n'));
@@ -100,6 +103,7 @@ function shoppingMainTask(text) {
             if(invalidList.length != 0){
                 ret.push('【処理できなかった命令】\n' + invalidList.join('\n'));
             }
+            console.log(ret);
             next(null, ret);
         };
     }
